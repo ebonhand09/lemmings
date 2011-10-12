@@ -1,6 +1,5 @@
-; These sections are used to fill the GIME to position the data that follows
-; Format:	(something)_page	load (GIMEREG)
-;		(something)		load (VIRT MEM LOC)
+section .payload_purplefont_physical_map	load	FFA3
+section .payload_purplefont			load	6000	; $20
 
 section	.program_code_physical_map		load	FFA6
 section	program_code				load	C000	; $30

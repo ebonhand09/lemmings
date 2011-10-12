@@ -3,7 +3,7 @@
 
 			SECTION .bss,bss
 some_variable_name	RMB	2
-some_public_Var_name	EXPORT
+some_variable_name	EXPORT					; If it needs to be public
 			ENDSECTION
 
 			SECTION program_code
