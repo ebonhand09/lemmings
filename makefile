@@ -1,5 +1,16 @@
 # Lemmings v6 makefile
 
+# Compile Fonts
+.PHONY: fonts
+fonts: bin/font0.bin bin/font1.bin
+
+bin/font0.bin: tools/extract-font.php
+	tools/extract-font.php 0
+
+bin/font1.bin: tools/extract-font.php
+	tools/extract-font.php 1
+
+
 # Compile Terrain
 .PHONY: terrain
 terrain: include/terrain-offset-table-0.asm include/terrain-offset-table-1.asm include/terrain-offset-table-2.asm \
@@ -122,4 +133,5 @@ clean:
 	rm -f bin/terrain/*
 	rm -f include/terrain-offset-table-?.asm
 	rm -f resources/terrain-adjustment?.php
+	rm -f bin/font?.bin
 

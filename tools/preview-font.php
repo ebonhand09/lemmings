@@ -127,7 +127,7 @@ for ($index = 0; $index < $number_of_chunks; $index++)
 
 	for ($y = 0; $y < 16; $y++)
 	{
-		$html .= PHP_EOL . '<tr>' . PHP_EOL;
+		$html .= PHP_EOL . '<tr rel="line-'.$y.'">' . PHP_EOL;
 		for ($x = 0; $x < $char_width; $x++)
 		{
 			$color = $data[$y][$x];
