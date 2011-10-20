@@ -1,4 +1,58 @@
 # Lemmings v6 makefile
+LWASM=lwasm
+LWASM_OPTS=--pragma=cescapes,undefextern --includedir=include --includedir=src/includes
+LWLINK=lwlink
+
+# Compile Everything
+.PHONY: all
+all: terrain fonts levels lemmings.dsk
+
+# Game source files
+lemmings_srcs := lemmings.asm module-gfx.asm module-font.asm payload.asm
+lemmings_srcs := $(addprefix src/,$(lemmings_srcs))
+
+lemmings_objs := $(lemmings_srcs:%.asm=%.o)
+
+# Loader source files
+extra_srcs := loader_stage1.asm loader_stage2.asm
+
+# All source files
+all_srcs := $(lemmings_srcs) $(extra_srcs)
+
+all_objs := $(lemmings_objs) $(extra_srcs:%.asm=%.o)
+
+# Link script
+lemmings_linkscript := src/linkscript
+
+lemmings.bin: $(lemmings_objs) $(lemmings_linkscript)
+	$(LWLINK) --format=decb --map=lemmings.map --script=$(lemmings_linkscript) -o $@ $(lemmings_objs)
+
+lemmings.img: loader_stage1.bin loader_stage2.rawbin lemmings.bin
+	cat loader_stage1.bin loader_stage2.rawbin lemmings.bin > $@
+
+%.o: %.asm
+	$(LWASM) $(LWASM_OPTS) --list=$*.list --symbols --format=obj -o $@ $<
+
+%.bin: %.asm
+	$(LWASM) $(LWASM_OPTS) --list=$*.list --symbols --format=decb -o $@ $<
+
+%.rawbin: %.asm
+	$(LWASM) $(LWASM_OPTS) --list=$*.list --symbols --format=raw -o $@ $<
+
+lemmings.dsk: lemmings.img
+	decb dskini $@
+	decb copy $< $@,L.BIN -2 -b
+
+# Compile Fonts
+.PHONY: fonts
+fonts: bin/font0.bin bin/font1.bin
+
+bin/font0.bin: tools/extract-font.php
+	tools/extract-font.php 0
+
+bin/font1.bin: tools/extract-font.php
+	tools/extract-font.php 1
+
 
 # Compile Terrain
 .PHONY: terrain
@@ -122,4 +176,17 @@ clean:
 	rm -f bin/terrain/*
 	rm -f include/terrain-offset-table-?.asm
 	rm -f resources/terrain-adjustment?.php
+	rm -f bin/font?.bin
+	rm -f $(kernel_objs) lemmings.bin lemmings.img lemmings.dsk loader_stage1.bin \
+loader_stage2.rawbin lemmings.map
+	rm -f *.list
+	rm -f src/*.list
+	rm -f src/*.o
+
+.PHONY: run
+run:	all
+	sdlmess -debug -joystick_deadzone 1.100000 -joystick_saturation 0.550000 -skip_gameinfo \
+	-ramsize 524288 -keepaspect -frameskip 0 -rompath /home/david/roms -video opengl -numscreens -1 \
+	-nomaximize coco3p -floppydisk1 `pwd`/lemmings.dsk \
+	2>&1 | cat > /dev/null
 
