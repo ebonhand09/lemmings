@@ -8,16 +8,17 @@ _a_private_var		RMB	16
 			ENDSECTION
 
 			SECTION	module_gfx
-set_graphics_mode	EXPORT
+set_graphics_256_mode	EXPORT
+set_graphics_320_mode	EXPORT
 set_palette		EXPORT
 
-;*** set_graphics_mode
+;*** set_graphics_256_mode
 ;	put the coco3 into 256x192x4bpp graphics mode, ntsc, starting at physical location $0000
 ;	Note that this will need adjusting when a real video location is selected
 ; ENTRY:	none
 ; EXIT:		none
 ; DESTROYS:	a
-set_graphics_mode
+set_graphics_256_mode
 			lda	#GIME_MMUEN|GIME_SCS|GIME_FEXX
 			sta	GIME.INIT0		; Set hardware config
 
@@ -27,11 +28,29 @@ set_graphics_mode
 			lda	#GIME_LPF192|GIME_BPR128|GIME_BPP4
 			sta	GIME.VRES		; Set video resolution
 
-			; Upper 16 bits of 19-bit starting address
-			;clr	GIME.VOFFSET		; For viewing the virtual screen
-							; For viewing the physical screen
-			;lda	#Phys_ScreenBuffer_0	; $3C00 = page $0F
-			;lda	_cur_vid_show_loc
+			lda	#ScreenBuffer_Phys	; Hack, replace with real address
+			sta	GIME.VOFFSET		; 
+			clr	GIME.VOFFSET+1
+			clr	GIME.VSCROLL
+			clr	GIME.HOFFSET
+			rts
+
+;*** set_graphics_320_mode
+;	put the coco3 into 320x200x16 graphics mode, ntsc, starting at physical location $0000
+;	Note that this will need adjusting when a real video location is selected
+; ENTRY:	none
+; EXIT:		none
+; DESTROYS:	a
+set_graphics_320_mode
+			lda	#GIME_MMUEN|GIME_SCS|GIME_FEXX
+			sta	GIME.INIT0		; Set hardware config
+
+			lda	#GIME_BP
+			sta	GIME.VMODE		; Set video mode
+
+			lda	#GIME_LPF200|GIME_BPR160|GIME_BPP4
+			sta	GIME.VRES		; Set video resolution
+
 			lda	#ScreenBuffer_Phys	; Hack, replace with real address
 			sta	GIME.VOFFSET		; 
 			clr	GIME.VOFFSET+1
