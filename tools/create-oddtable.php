@@ -47,7 +47,7 @@ function convertWordStringToValue($string)
 $oddtable = array();
 $map_oddtable_entries = array();
 
-$input_filename = "../resources/dat/oddtable.dat";
+$input_filename = "/home/david/projects/lemmings/resources/dat/oddtable.dat";
 $input_handle = fopen($input_filename, 'rb');
 
 if (!$input_handle) die ("Bork - couldn't load $input_filename\n");
@@ -104,12 +104,12 @@ foreach ($oddtable as $ot)
 	$odd_output .= chr($ot->maxDiggers);
 }
 
-file_put_contents('../bin/oddtable.bin', $odd_output); // 44 bytes per entry, total size 1760 bytes
+file_put_contents('/home/david/projects/lemmings/bin/oddtable.bin', $odd_output); // 44 bytes per entry, total size 1760 bytes
 
 
 $raw_levels = array();
 $level_size = array();
-foreach(glob('../bin/levels/*.lvl') as $filename)
+foreach(glob('/home/david/projects/lemmings/bin/levels/*.lvl') as $filename)
 {
 	$level_size[] = filesize($filename);
 }
@@ -125,8 +125,6 @@ foreach ($level_size as $key => $lvlsize)
 			$offset_counter,
 			$lvlsize
 		);
-
-		var_dump($lvlsize);
 
 		$offset_counter += $lvlsize;
 		if ($offset_counter > 8192)
@@ -269,9 +267,31 @@ $level_order = array(
 118	=> $levels[(8*8)+7],
 119	=> $levels[(9*8)+0],
 
-
-
 );
 
-var_dump($level_order);
+$output = NULL;
+
+foreach ($level_order as $key => $entry)
+{
+	if ($entry[0] == 0xff)
+	{ // entry is an oddtable entry
+		$raw = chr(0xff) . chr(0) . chr($entry[1]) . valueToWord($entry[2]);
+	}
+	else
+	{ // entry is a raw level entry
+		$raw = chr($entry[0]) . valueToWord($entry[1]) . valueToWord($entry[2]);
+	}
+
+	$output .= $raw;
+}
+
+file_put_contents('/home/david/projects/lemmings/bin/levelorder.bin', $output);
+
+function valueToWord($value)
+{
+	$upper = $value >> 8;
+	$lower = $value % 256;
+	return chr($upper) . chr($lower);
+}
+
 

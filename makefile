@@ -145,7 +145,7 @@ bin/terrain4.bin: $(terrain_4_objs)
 
 # Compile Levels
 .PHONY: levels
-levels: terrain bin/levels.bin
+levels: terrain bin/levels.bin bin/oddtable.bin bin/levelorder.bin
 
 level_srcs :=  level-0-0.dat  level-0-1.dat  level-0-2.dat  level-0-3.dat  level-0-4.dat  level-0-5.dat  level-0-6.dat  level-0-7.dat \
 level-1-0.dat  level-1-1.dat  level-1-2.dat  level-1-3.dat  level-1-4.dat  level-1-5.dat  level-1-6.dat  level-1-7.dat  level-2-0.dat \
@@ -167,6 +167,11 @@ bin/levels/%.lvl: resources/levels/%.dat tools/convert-level.php
 
 bin/levels.bin: $(level_objs)
 	cat $^ > $@
+
+bin/levelorder.bin: bin/oddtable.bin
+
+bin/oddtable.bin: $(level_objs) tools/create-oddtable.php
+	tools/create-oddtable.php
 	
 .PHONY: clean
 clean:
@@ -177,6 +182,8 @@ clean:
 	rm -f include/terrain-offset-table-?.asm
 	rm -f resources/terrain-adjustment?.php
 	rm -f bin/font?.bin
+	rm -f bin/oddtable.bin
+	rm -f bin/levelorder.bin
 	rm -f $(kernel_objs) lemmings.bin lemmings.img lemmings.dsk loader_stage1.bin \
 loader_stage2.rawbin lemmings.map
 	rm -f *.list
