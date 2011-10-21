@@ -167,6 +167,7 @@ bin/levels/%.lvl: resources/levels/%.dat tools/convert-level.php
 
 bin/levels.bin: $(level_objs)
 	cat $^ > $@
+	split -b 8192 -da 1 bin/levels.bin bin/levels.bin.
 
 bin/levelorder.bin: bin/oddtable.bin
 
@@ -177,6 +178,7 @@ bin/oddtable.bin: $(level_objs) tools/create-oddtable.php
 clean:
 	rm -f bin/levels/*.lvl
 	rm -f bin/levels.bin
+	rm -f bin/levels.bin.?
 	rm -f bin/terrain?.bin
 	rm -f bin/terrain/*
 	rm -f include/terrain-offset-table-?.asm
