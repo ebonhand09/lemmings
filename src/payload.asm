@@ -7,8 +7,8 @@
 				SECTION	.payload_levelorder			; ORG	$6000
 LevelOrder			EXPORT
 OddTable			EXPORT
-LevelOrder			INCLUDEBIN	"../bin/levelorder.bin"
 OddTable			INCLUDEBIN	"../bin/oddtable.bin"
+LevelOrder			INCLUDEBIN	"../bin/levelorder.bin"
 				ENDSECTION
 
 				SECTION .payload_leveldata_physical_map_0	; ORG	$FFA4
@@ -16,53 +16,15 @@ OddTable			INCLUDEBIN	"../bin/oddtable.bin"
 				ENDSECTION
 
 				SECTION .payload_leveldata_0
-				INCLUDEBIN	"../bin/levels.bin.0"
+				INCLUDEBIN	"../bin/levels.bin"
 				ENDSECTION
 
-				SECTION .payload_leveldata_physical_map_1	; ORG	$FFA4
-				FCB	LevelData_Block+1
+				SECTION .payload_terraindata_physical_map_0	; ORG	$FFA3
+				FCB	TerrainData_Block,TerrainData_Block+1	; temp 2 blocks
+				; will fill out to the full 7 once all sets are being included
 				ENDSECTION
-
-				SECTION .payload_leveldata_1
-				INCLUDEBIN	"../bin/levels.bin.1"
-				ENDSECTION
-
-				SECTION .payload_leveldata_physical_map_2	; ORG	$FFA4
-				FCB	LevelData_Block+2
-				ENDSECTION
-
-				SECTION .payload_leveldata_2
-				INCLUDEBIN	"../bin/levels.bin.2"
-				ENDSECTION
-
-				SECTION .payload_leveldata_physical_map_3	; ORG	$FFA4
-				FCB	LevelData_Block+3
-				ENDSECTION
-
-				SECTION .payload_leveldata_3
-				INCLUDEBIN	"../bin/levels.bin.3"
-				ENDSECTION
-
-				SECTION .payload_leveldata_physical_map_4	; ORG	$FFA4
-				FCB	LevelData_Block+4
-				ENDSECTION
-
-				SECTION .payload_leveldata_4
-				INCLUDEBIN	"../bin/levels.bin.4"
-				ENDSECTION
-
-				SECTION .payload_leveldata_physical_map_5	; ORG	$FFA4
-				FCB	LevelData_Block+5
-				ENDSECTION
-
-				SECTION .payload_leveldata_5
-				INCLUDEBIN	"../bin/levels.bin.5"
-				ENDSECTION
-
-				SECTION .payload_leveldata_physical_map_6	; ORG	$FFA4
-				FCB	LevelData_Block+6
-				ENDSECTION
-
-				SECTION .payload_leveldata_6
-				INCLUDEBIN	"../bin/levels.bin.6"
+				
+				SECTION .payload_terraindata_0			; ORG	$6000
+Terrain0Data			EXPORT
+Terrain0Data			INCLUDEBIN	"../bin/terrain0.slz" 
 				ENDSECTION

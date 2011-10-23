@@ -1,32 +1,19 @@
+section .payload_terraindata_physical_map_0	load	FFA3	; $17
+section .payload_terraindata_0			load	6000
+
 section .payload_levelorder_physical_map	load	FFA3
-section .payload_levelorder			load	6000	; $20
+section .payload_levelorder			load	6000	; $1E
 
 section .payload_leveldata_physical_map_0	load	FFA4
-section .payload_leveldata_0			load	8000	; $21
-
-section .payload_leveldata_physical_map_1	load	FFA4
-section .payload_leveldata_1			load	8000	; $21
-
-section .payload_leveldata_physical_map_2	load	FFA4
-section .payload_leveldata_2			load	8000	; $21
-
-section .payload_leveldata_physical_map_3	load	FFA4
-section .payload_leveldata_3			load	8000	; $21
-
-section .payload_leveldata_physical_map_4	load	FFA4
-section .payload_leveldata_4			load	8000	; $21
-
-section .payload_leveldata_physical_map_5	load	FFA4
-section .payload_leveldata_5			load	8000	; $21
-
-section .payload_leveldata_physical_map_6	load	FFA4
-section .payload_leveldata_6			load	8000	; $21
-
+section .payload_leveldata_0			load	8000	; $1F
 
 section	.program_code_physical_map		load	FFA6
 section	program_code				load	C000	; $30
 
+section module_slz
+
 section module_gfx
+
 section .bss
 
 section	.program_code_stack			load	FD00

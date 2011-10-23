@@ -1,0 +1,49 @@
+Block Layout:
+0x00
+0x01
+0x02
+0x03
+0x04
+0x05
+0x06	Virtual World - 15 blocks
+0x07
+0x08
+0x09
+0x0A
+0X0B
+0X0C
+0X0D
+0X0E
+----------------------------------------------
+0X0F
+0X10	Screen Buffer 0 - 4 blocks
+0X11
+0X12
+----------------------------------------------
+0X13
+0X14	Screen Buffer 1 - 4 blocks
+0X15
+0X16
+----------------------------------------------
+0x17
+0x18	
+0x19
+0x1A	Terrain Sets - SLZ - 7 blocks
+0x1B	(Temporary decompress to Screen Buffer 0)
+0x1C
+0x1D
+----------------------------------------------
+0x1E	LevelOrder / OddTable / CurrentLevel
+0x1F	
+
+
+
+Unallocated:
+Objects
+Sprites
+Levels
+Title Screen graphics
+Fonts
+Palettes
+
+

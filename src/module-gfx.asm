@@ -10,6 +10,7 @@ _a_private_var		RMB	16
 			SECTION	module_gfx
 set_graphics_256_mode	EXPORT
 set_graphics_320_mode	EXPORT
+clear_graphics_320	EXPORT
 set_palette		EXPORT
 
 ;*** set_graphics_256_mode
@@ -28,7 +29,7 @@ set_graphics_256_mode
 			lda	#GIME_LPF192|GIME_BPR128|GIME_BPP4
 			sta	GIME.VRES		; Set video resolution
 
-			lda	#ScreenBuffer_Phys	; Hack, replace with real address
+			lda	#ScreenBuffer0_Phys	; Hack, replace with real address
 			sta	GIME.VOFFSET		; 
 			clr	GIME.VOFFSET+1
 			clr	GIME.VSCROLL
@@ -51,12 +52,72 @@ set_graphics_320_mode
 			lda	#GIME_LPF200|GIME_BPR160|GIME_BPP4
 			sta	GIME.VRES		; Set video resolution
 
-			lda	#ScreenBuffer_Phys	; Hack, replace with real address
+			lda	#ScreenBuffer0_Phys	; Hack, replace with real address
 			sta	GIME.VOFFSET		; 
 			clr	GIME.VOFFSET+1
 			clr	GIME.VSCROLL
 			clr	GIME.HOFFSET
 			rts
+
+;*** clear_graphics_320
+;	save the mapped blocks for FFA0 through FFA4, map those blocks to the four physical blocks for
+;	the first (and then second) video buffers, and clear them to zero
+;	then, restore the saved mappings
+; ENTRY:	none
+; EXIT:		none
+; DESTROYS:	pretty much everything
+clear_graphics_320
+; save existing mappings
+			ldd	$FFA0
+			pshs	d
+			ldd	$FFA2
+			pshs	d
+; map to first virtual screen
+			lda	#ScreenBuffer0_Block
+			ldx	#$FFA0
+			sta	,x+
+			inca
+			sta	,x+
+			inca
+			sta	,x+
+			inca	
+			sta	,x
+; clear a chunk of video
+			ldb	#$0
+			ldx	#$0
+			ldy	#$7D00		; one less?
+!			stb	,x+
+			leay	-1,y
+			bne	<
+; end clear chunk
+
+; repeat for screen buffer 1
+			lda	#ScreenBuffer1_Block
+			ldx	#$FFA0
+			sta	,x+
+			inca
+			sta	,x+
+			inca
+			sta	,x+
+			inca	
+			sta	,x
+; clear a chunk of video
+			ldb	#$0
+			ldx	#$0
+			ldy	#$7D00		; one less?
+!			stb	,x+
+			leay	-1,y
+			bne	<
+; end clear chunk
+
+; restore previous mappings
+			puls	d
+			std	$FFA2
+			puls	d
+			std	$FFA0
+
+			rts
+
 
 ;*** SetPalette: Configure the palette for the appropriate level. Hard-coded to Grass/0 for now
 set_palette

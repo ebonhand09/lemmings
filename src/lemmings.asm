@@ -2,8 +2,8 @@
 			INCLUDE	"definitions.asm"		; Lemmings shared defs
 
 			SECTION .bss,bss
-some_variable_name	RMB	2
-some_variable_name	EXPORT					; If it needs to be public
+current_level_number	RMB	1
+current_level_number	EXPORT
 			ENDSECTION
 
 			SECTION program_code
@@ -13,39 +13,17 @@ ProgramCode		;** To be loaded at $C000
 			orcc	#$50			; Disable interrupts (just in case)
 			lds	#Stack			; Relocate stack
 			
-; Code goes here
-			jsr	set_graphics_320_mode
-
+; Init Code goes here
 			jsr	set_palette
+			jsr	clear_graphics_320
+			jsr	set_graphics_320_mode
+; level preparation
+			lda	#0
+			sta	current_level_number	; reset current level to zero
 
-			lda	#ScreenBuffer_Block
-			sta	$FFA4
-; clear a chunk of video
-			ldb	#$0
-			ldx	#$8000
-			ldy	#$2000
-!			stb	,x+
-			leay	-1,y
-			bne	<
-; end clear chunk
-
-; establish level order table
-			lda	#LevelOrder_Block
-			sta	LevelOrder_Reg
-			ldx	#LevelOrder_Window	; X now points to LevelOrder
-
-; get first level data	
-			lda	,x			; get block info
-			cmpa	#$ff			; is it an oddtable reference?
-			bne	>			; brifnot
-			; do oddtable stuff here
-			; e.g. set oddtable flags
-			; and point routine to the raw level data
-			jmp	ENDLOOP	;; hack for now
-
-!			
-
-
+			jsr	extract_current_level	; grab the current level to set area
+			
+			jsr	slz_uncompress_terrain
 
 ENDLOOP			jmp	ENDLOOP
 			ENDSECTION

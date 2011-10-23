@@ -5,10 +5,10 @@ LWLINK=lwlink
 
 # Compile Everything
 .PHONY: all
-all: terrain fonts levels lemmings.dsk
+all: terrain levels lemmings.dsk
 
 # Game source files
-lemmings_srcs := lemmings.asm module-gfx.asm module-font.asm payload.asm
+lemmings_srcs := lemmings.asm module-slz.asm module-gfx.asm module-level.asm payload.asm
 lemmings_srcs := $(addprefix src/,$(lemmings_srcs))
 
 lemmings_objs := $(lemmings_srcs:%.asm=%.o)
@@ -42,16 +42,6 @@ lemmings.img: loader_stage1.bin loader_stage2.rawbin lemmings.bin
 lemmings.dsk: lemmings.img
 	decb dskini $@
 	decb copy $< $@,L.BIN -2 -b
-
-# Compile Fonts
-.PHONY: fonts
-fonts: bin/font0.bin bin/font1.bin
-
-bin/font0.bin: tools/extract-font.php
-	tools/extract-font.php 0
-
-bin/font1.bin: tools/extract-font.php
-	tools/extract-font.php 1
 
 
 # Compile Terrain
@@ -130,6 +120,7 @@ include/terrain-offset-table-4.asm:
 
 bin/terrain0.bin: $(terrain_0_objs)
 	cat $^ > $@
+	slz p bin/terrain0.bin bin/terrain0.slz
 
 bin/terrain1.bin: $(terrain_1_objs)
 	cat $^ > $@
@@ -147,7 +138,7 @@ bin/terrain4.bin: $(terrain_4_objs)
 .PHONY: levels
 levels: terrain bin/levels.bin bin/oddtable.bin bin/levelorder.bin
 
-level_srcs :=  level-0-0.dat  level-0-1.dat  level-0-2.dat  level-0-3.dat  level-0-4.dat  level-0-5.dat  level-0-6.dat  level-0-7.dat \
+#level_srcs :=  level-0-0.dat  level-0-1.dat  level-0-2.dat  level-0-3.dat  level-0-4.dat  level-0-5.dat  level-0-6.dat  level-0-7.dat \
 level-1-0.dat  level-1-1.dat  level-1-2.dat  level-1-3.dat  level-1-4.dat  level-1-5.dat  level-1-6.dat  level-1-7.dat  level-2-0.dat \
 level-2-1.dat  level-2-2.dat  level-2-3.dat  level-2-4.dat  level-2-5.dat  level-2-6.dat  level-2-7.dat  level-3-0.dat  level-3-1.dat \
 level-3-2.dat  level-3-3.dat  level-3-4.dat  level-3-5.dat  level-3-6.dat  level-3-7.dat  level-4-0.dat  level-4-1.dat  level-4-2.dat \
@@ -156,6 +147,8 @@ level-5-4.dat  level-5-5.dat  level-5-6.dat  level-5-7.dat  level-6-0.dat  level
 level-6-5.dat  level-6-6.dat  level-6-7.dat  level-7-0.dat  level-7-1.dat  level-7-2.dat  level-7-3.dat  level-7-4.dat  level-7-5.dat \
 level-7-6.dat  level-7-7.dat  level-8-0.dat  level-8-1.dat  level-8-2.dat  level-8-3.dat  level-8-4.dat  level-8-5.dat  level-8-6.dat \
 level-8-7.dat  level-9-0.dat  level-9-1.dat  level-9-2.dat  level-9-3.dat  level-9-4.dat  level-9-5.dat  level-9-6.dat  level-9-7.dat 
+
+level_srcs := level-3-0.dat level-9-1.dat
 
 level_objs := $(level_srcs:%.dat=%.lvl)
 
@@ -167,12 +160,12 @@ bin/levels/%.lvl: resources/levels/%.dat tools/convert-level.php
 
 bin/levels.bin: $(level_objs)
 	cat $^ > $@
-	split -b 8192 -da 1 bin/levels.bin bin/levels.bin.
+	#split -b 8192 -da 1 bin/levels.bin bin/levels.bin.
 
 bin/levelorder.bin: bin/oddtable.bin
 
-bin/oddtable.bin: $(level_objs) tools/create-oddtable.php
-	tools/create-oddtable.php
+bin/oddtable.bin: $(level_objs) tools/create-temporary-oddtable.php
+	tools/create-temporary-oddtable.php
 	
 .PHONY: clean
 clean:
@@ -180,6 +173,7 @@ clean:
 	rm -f bin/levels.bin
 	rm -f bin/levels.bin.?
 	rm -f bin/terrain?.bin
+	rm -f bin/terrain?.slz
 	rm -f bin/terrain/*
 	rm -f include/terrain-offset-table-?.asm
 	rm -f resources/terrain-adjustment?.php
