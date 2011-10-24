@@ -8,7 +8,7 @@ LWLINK=lwlink
 all: terrain levels lemmings.dsk
 
 # Game source files
-lemmings_srcs := lemmings.asm module-slz.asm module-gfx.asm module-level.asm payload.asm
+lemmings_srcs := lemmings.asm module-slz.asm module-gfx.asm module-level.asm module-virtualworld.asm payload.asm
 lemmings_srcs := $(addprefix src/,$(lemmings_srcs))
 
 lemmings_objs := $(lemmings_srcs:%.asm=%.o)
