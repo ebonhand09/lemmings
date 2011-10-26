@@ -12,7 +12,7 @@ LevelOrder_Reg			EQU	$FFA3		; gime map reg 0xfa3
 LevelOrder_Window		EQU	$6000		; virtual block 0x6000
 LevelOrder_Offset		EQU	$6E0		; begins after oddtable
 
-LevelData_Block			EQU	$1F		; physical blok 0x21
+LevelData_Block			EQU	$24		; physical block 0x24
 LevelData_Reg			EQU	$FFA4		; gime map reg 0xfa4
 LevelData_Window		EQU	$8000		; virtual block 0x8000
 LevelData_Offset		EQU	$0		; begins at start of block
@@ -26,7 +26,11 @@ TerrainData_Block		EQU	$17		; physical block 0x17
 TerrainData_Reg			EQU	$FFA3		;
 TerrainData_Window		EQU	$6000
 TerrainData_Offset		EQU	$0
-TerrainData_Set1_Offset		EQU	$0
+TerrainSetData0			EQU	$0
+
+TerrainOffsetTable_Block	EQU	$1F
+TerrainOffsetTable_Reg		EQU	$FFA5
+TerrainOffsetTable_Window	EQU	$A000
 
 CurrentTerrain_Block		EQU	$0F		; Shares ScreenBuffer0
 

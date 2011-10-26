@@ -28,3 +28,14 @@ LevelOrder			INCLUDEBIN	"../bin/levelorder.bin"
 Terrain0Data			EXPORT
 Terrain0Data			INCLUDEBIN	"../bin/terrain0.slz" 
 				ENDSECTION
+
+				SECTION .payload_terrain_offset_physical_map ; ORG $FFA5
+				FCB     TerrainOffsetTable_Block
+				ENDSECTION
+
+
+                                SECTION .payload_terrain_offset         ; ORG $A000
+TerrainOffsetTable              EXPORT
+TerrainOffsetTable              INCLUDE         "../include/terrain-offset-table-0.asm"
+                                ENDSECTION
+

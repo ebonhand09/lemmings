@@ -8,7 +8,7 @@ LWLINK=lwlink
 all: terrain levels lemmings.dsk
 
 # Game source files
-lemmings_srcs := lemmings.asm module-slz.asm module-gfx.asm module-level.asm module-virtualworld.asm payload.asm
+lemmings_srcs := lemmings.asm module-slz.asm module-gfx.asm module-level.asm module-virtualworld.asm module-terrain.asm payload.asm
 lemmings_srcs := $(addprefix src/,$(lemmings_srcs))
 
 lemmings_objs := $(lemmings_srcs:%.asm=%.o)
@@ -186,10 +186,14 @@ loader_stage2.rawbin lemmings.map
 	rm -f src/*.list
 	rm -f src/*.o
 
-.PHONY: run
-run:	all
+.PHONY: runold
+runold:	all
 	sdlmess -debug -joystick_deadzone 1.100000 -joystick_saturation 0.550000 -skip_gameinfo \
 	-ramsize 524288 -keepaspect -frameskip 0 -rompath /home/david/roms -video opengl -numscreens -1 \
 	-nomaximize coco3p -floppydisk1 `pwd`/lemmings.dsk \
 	2>&1 | cat > /dev/null
 
+.PHONY: run
+run:	all
+	sdlmess -debug -skip_gameinfo -ramsize 524288 -keepaspect -frameskip 0 -nomaximize coco3p -floppydisk1 `pwd`/lemmings.dsk \
+	2>&1 | cat > /dev/null
